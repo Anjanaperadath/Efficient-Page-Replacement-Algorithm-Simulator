@@ -1,4 +1,6 @@
 import streamlit as st
+import matplotlib
+matplotlib.use('Agg')  # Fix for headless environments
 import matplotlib.pyplot as plt
 
 # FIFO Algorithm
@@ -157,6 +159,7 @@ if run_clicked:
             st.write("**LRU's limitation:** High overhead due to maintaining page usage history.")
         if max_faults == faults[2]:
             st.write("**Optimal's limitation:** It is theoretical and cannot be used in real-world applications.")
+
 
 
 
