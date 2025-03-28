@@ -68,26 +68,33 @@ st.sidebar.header("🛠 Settings")
 num_frames = st.sidebar.number_input("Number of Frames", min_value=1, max_value=10, value=3, step=1)
 ref_string = st.sidebar.text_input("Enter Reference String (comma-separated)", "7, 0, 1, 2, 0, 3, 4, 2, 3, 0, 3, 2")
 
-if st.sidebar.button("Run Simulation"):
-    pages = list(map(int, ref_string.split(',')))
-    
-    # Run Algorithms
-    fifo_faults, _ = fifo_page_replacement(pages, num_frames)
-    lru_faults, _ = lru_page_replacement(pages, num_frames)
-    optimal_faults, _ = optimal_page_replacement(pages, num_frames)
+# Ensure valid input
+try:
+    pages = [int(x.strip()) for x in ref_string.split(",") if x.strip().isdigit()]
+    if not pages:
+        raise ValueError("Reference string must contain at least one valid number.")
 
-    # Display Results
-    st.subheader("📌 Page Replacement Results")
-    st.write(f"**FIFO Page Faults:** {fifo_faults}")
-    st.write(f"**LRU Page Faults:** {lru_faults}")
-    st.write(f"**Optimal Page Faults:** {optimal_faults}")
+    if st.sidebar.button("Run Simulation"):
+        # Run Algorithms
+        fifo_faults, _ = fifo_page_replacement(pages, num_frames)
+        lru_faults, _ = lru_page_replacement(pages, num_frames)
+        optimal_faults, _ = optimal_page_replacement(pages, num_frames)
 
-    # Visualization
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.bar(["FIFO", "LRU", "Optimal"], [fifo_faults, lru_faults, optimal_faults], color=['blue', 'green', 'red'])
-    ax.set_ylabel("Number of Page Faults")
-    ax.set_title("Comparison of FIFO, LRU, and Optimal Page Replacement")
+        # Display Results
+        st.subheader("📌 Page Replacement Results")
+        st.write(f"**FIFO Page Faults:** {fifo_faults}")
+        st.write(f"**LRU Page Faults:** {lru_faults}")
+        st.write(f"**Optimal Page Faults:** {optimal_faults}")
 
-    st.pyplot(fig)
+        # Visualization
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.bar(["FIFO", "LRU", "Optimal"], [fifo_faults, lru_faults, optimal_faults], color=['blue', 'green', 'red'])
+        ax.set_ylabel("Number of Page Faults")
+        ax.set_title("Comparison of FIFO, LRU, and Optimal Page Replacement")
 
-st.markdown("👨‍💻 **Built with Python, Streamlit & Matplotlib**"
+        st.pyplot(fig)
+
+except ValueError as e:
+    st.error(f"⚠ Error: {e}")
+
+st.markdown("👨‍💻 **Built with Python, Streamlit & Matplotlib**")
